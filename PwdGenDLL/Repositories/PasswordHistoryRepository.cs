@@ -18,108 +18,98 @@ namespace PwdGenDLL.Repositories.Implementations
 
         public IEnumerable<PasswordHistory> Get()
         {
-            var passwordHistories = _dbSet.Include(ph => ph.Settings).ToList();
+            var entities = _dbSet.Include(ph => ph.Settings).ToList();
 
-            foreach (var passwordHistory in passwordHistories)
+            foreach (var entity in entities)
             {
-                if (passwordHistory.Settings != null)
+                if (entity.Settings != null)
                 {
-                    _dbContext.Entry(passwordHistory.Settings)
+                    _dbContext.Entry(entity.Settings)
                         .Reference(s => s.Encryption)
                         .Load();
 
-                    _dbContext.Entry(passwordHistory.Settings)
+                    _dbContext.Entry(entity.Settings)
                         .Reference(s => s.Key)
                         .Load();
                 }
             }
 
-            return passwordHistories;
+            return entities;
         }
 
         public IEnumerable<PasswordHistory> Get(Func<PasswordHistory, bool> predicate)
         {
-            var passwordHistories = _dbSet.Include(ph => ph.Settings).Where(predicate).ToList();
+            var entities = _dbSet.Include(ph => ph.Settings).Where(predicate).ToList();
 
-            foreach (var passwordHistory in passwordHistories)
+            foreach (var entity in entities)
             {
-                if (passwordHistory.Settings != null)
+                if (entity.Settings != null)
                 {
-                    _dbContext.Entry(passwordHistory.Settings)
+                    _dbContext.Entry(entity.Settings)
                         .Reference(s => s.Encryption)
                         .Load();
 
-                    _dbContext.Entry(passwordHistory.Settings)
+                    _dbContext.Entry(entity.Settings)
                         .Reference(s => s.Key)
                         .Load();
                 }
             }
 
-            return passwordHistories;
+            return entities;
         }
 
 
         public PasswordHistory? Get(int id)
         {
-            var passwordHistory = _dbSet.Include(ph => ph.Settings).FirstOrDefault(ph => ph.Id == id);
+            var entity = _dbSet.Include(ph => ph.Settings).FirstOrDefault(ph => ph.Id == id);
 
-            if (passwordHistory != null && passwordHistory.Settings != null)
+            if (entity != null && entity.Settings != null)
             {
-                _dbContext.Entry(passwordHistory.Settings)
+                _dbContext.Entry(entity.Settings)
                     .Reference(s => s.Encryption)
                     .Load();
 
-                _dbContext.Entry(passwordHistory.Settings)
+                _dbContext.Entry(entity.Settings)
                     .Reference(s => s.Key)
                     .Load();
             }
 
-            return passwordHistory;
+            return entity;
         }
 
 
-        public void Add(PasswordHistory key)
+        public void Add(PasswordHistory entity)
         {
-            _dbSet.Add(key);
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Detached;
-                throw;
-            }
+            _dbSet.Add(entity);
+            try { _dbContext.SaveChanges(); }
+            catch { _dbContext.Entry(entity).State = EntityState.Detached; throw; }
         }
 
-        public void Update(PasswordHistory key)
+        public void Update(PasswordHistory entity)
         {
-            _dbContext.Entry(key).State = EntityState.Modified;
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Unchanged;
-                throw;
-            }
+            _dbContext.Entry(entity).State = EntityState.Modified;
+            try { _dbContext.SaveChanges(); }
+            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 
-        public void Delete(PasswordHistory key)
+        public void Delete(PasswordHistory entity)
         {
             try
             {
-                _dbContext.Remove(key);
+                _dbContext.Remove(entity);
                 _dbContext.SaveChanges();
             }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Unchanged;
-                throw;
-            }
+            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 
-        public void Delete(int id) => Delete(_dbSet.Find(id));
+        public void Delete(int id)
+        {
+            try
+            {
+                _dbContext.Remove(_dbSet.Find(id) ?? throw new("Given entity was not found."));
+                _dbContext.SaveChanges();
+            }
+            catch { _dbContext.Entry(id).State = EntityState.Unchanged; throw; }
+        }
     }
 }

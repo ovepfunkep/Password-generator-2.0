@@ -90,10 +90,6 @@ namespace PwdGenTests.DLL.Repositories
             var key2 = new Key { Id = 2, Value = "TestKey2" };
             var settings1 = new Settings { Id = 1, Encryption = encryption, Key = key1 };
             var settings2 = new Settings { Id = 2, Encryption = encryption, Key = key2 };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key1);
-            _dbContext.Keys.Add(key2);
-            _dbContext.SaveChanges();
             _repository.Add(settings1);
             _repository.Add(settings2);
 
@@ -120,10 +116,6 @@ namespace PwdGenTests.DLL.Repositories
             var key2 = new Key { Id = 2, Value = "TestKey2" };
             var settings1 = new Settings { Id = 1, Encryption = encryption, Key = key1 };
             var settings2 = new Settings { Id = 2, Encryption = encryption, Key = key2 };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key1);
-            _dbContext.Keys.Add(key2);
-            _dbContext.SaveChanges();
             _repository.Add(settings1);
             _repository.Add(settings2);
 
@@ -149,16 +141,18 @@ namespace PwdGenTests.DLL.Repositories
             var encryption = new Encryption { Id = 1, Name = "AES" };
             var key = new Key { Id = 1, Value = "TestKey" };
             var settings1 = new Settings { Id = 1, Encryption = encryption, Key = key };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
             _repository.Add(settings1);
 
             // Act
-            var result = _repository.Get(settings1.Id + 1);
+            var result1 = _repository.Get(settings1.Id + 1);
+            var result2 = _repository.Get(s => s.Id == settings1.Id + 1);
 
             // Assert
-            Assert.That(result, Is.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result1, Is.Null);
+                Assert.That(result2, Is.Empty);
+            });
         }
 
         [Test]
@@ -170,12 +164,9 @@ namespace PwdGenTests.DLL.Repositories
             var encryption2 = new Encryption { Id = 2, Name = "AES2" };
             var key2 = new Key { Id = 2, Value = "TestKey2" };
             var settings = new Settings { Id = 1, Encryption = encryption1, Key = key1 };
-            _dbContext.Encryptions.Add(encryption1);
-            _dbContext.Encryptions.Add(encryption2);
-            _dbContext.Keys.Add(key1);
-            _dbContext.Keys.Add(key2);
-            _dbContext.SaveChanges();
             _repository.Add(settings);
+            _dbContext.Add(key2);
+            _dbContext.Add(encryption2);
 
             // Act
             settings.EncryptionId = 2;
@@ -202,11 +193,6 @@ namespace PwdGenTests.DLL.Repositories
             var key2 = new Key { Id = 2, Value = "TestKey2" };
             var settings1 = new Settings { Id = 1, Encryption = encryption1, Key = key1 };
             var settings2 = new Settings { Id = 2, Encryption = encryption2, Key = key2 };
-            _dbContext.Encryptions.Add(encryption1);
-            _dbContext.Encryptions.Add(encryption2);
-            _dbContext.Keys.Add(key1);
-            _dbContext.Keys.Add(key2);
-            _dbContext.SaveChanges();
             _repository.Add(settings1);
             _repository.Add(settings2);
 
@@ -224,34 +210,30 @@ namespace PwdGenTests.DLL.Repositories
         public void Delete_ValidSettings()
         {
             // Arrange
-            var encryption = new Encryption { Id = 1, Name = "AES" };
+            var encryption1 = new Encryption { Id = 1, Name = "AES1" };
+            var encryption2 = new Encryption { Id = 2, Name = "AES2" };
             var key = new Key { Id = 1, Value = "TestKey" };
-            var settings = new Settings { Id = 1, Encryption = encryption, Key = key };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
-            _repository.Add(settings);
+            var settings1 = new Settings { Id = 1, Encryption = encryption1, Key = key };
+            var settings2 = new Settings { Id = 2, Encryption = encryption2, Key = key };
+            _repository.Add(settings1);
+            _repository.Add(settings2);
 
             // Act and Assert
-            Assert.That(() => _repository.Delete(settings), Throws.Nothing);
-            var savedSettings = _dbContext.Settings.ToList();
-            Assert.That(savedSettings, Is.Empty);
+            Assert.Multiple(() =>
+            {
+                Assert.That(() => _repository.Delete(settings1.Id), Throws.Nothing);
+                Assert.That(() => _repository.Delete(settings2), Throws.Nothing);
+                var savedSettings = _dbContext.Settings.ToList();
+                Assert.That(savedSettings, Is.Empty);
+            });
         }
 
         [Test]
         public void Delete_InvalidSettings_ThrowsException()
         {
-            // Arrange
-            var encryption = new Encryption { Id = 1, Name = "AES" };
-            var key = new Key { Id = 1, Value = "TestKey" };
-            var settings = new Settings { Id = 1, Encryption = encryption, Key = key };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
-            _repository.Add(settings);
-
             // Act and Assert
-            Assert.That(() => _repository.Delete(2), Throws.Exception);
+            Assert.That(() => _repository.Delete(1), Throws.Exception);
+            Assert.That(() => _repository.Delete(new Settings() { Id = 1}), Throws.Exception);
         }
     }
 }

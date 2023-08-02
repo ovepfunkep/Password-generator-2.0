@@ -102,15 +102,15 @@ namespace PwdGenTests.DLL.Repositories
 
             // Act
             var resultEncryption1 = _repository.Get(encryption1?.Id ?? 0);
-            var resultEncryption2 = _repository.Get(encryption2?.Id ?? 0);
+            var resultEncryption2 = _repository.Get(e => e.Id == encryption2.Id);
 
             // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(resultEncryption1, Is.Not.Null);
-                Assert.That(resultEncryption2, Is.Not.Null);
+                Assert.That(resultEncryption2, Is.Not.Empty);
                 Assert.That(resultEncryption1, Is.EqualTo(encryption1));
-                Assert.That(resultEncryption2, Is.EqualTo(encryption2));
+                Assert.That(resultEncryption2.First(), Is.EqualTo(encryption2));
             });
         }
 
@@ -122,10 +122,12 @@ namespace PwdGenTests.DLL.Repositories
             _repository.Add(encryption);
 
             // Act
-            var result = _repository.Get(encryption.Id + 1);
+            var result1 = _repository.Get(encryption.Id + 1);
+            var result2 = _repository.Get(e => e.Id == (encryption.Id + 1));
 
             // Assert
-            Assert.That(result, Is.Null);
+            Assert.That(result1, Is.Null);
+            Assert.That(result2, Is.Empty);
         }
 
         [Test]
@@ -173,20 +175,30 @@ namespace PwdGenTests.DLL.Repositories
         public void Delete_ValidEncryption_ThrowsException()
         {
             // Arrange
-            var encryption = new Encryption { Name = "TestEncryption" };
-            _repository.Add(encryption);
-
+            var encryption1 = new Encryption { Name = "TestEncryption1" };
+            var encryption2 = new Encryption { Name = "TestEncryption2" };
+            _repository.Add(encryption1);
+            _repository.Add(encryption2);
+            
             // Act and Assert
-            Assert.That(() => _repository.Delete(encryption.Id), Throws.Nothing);
-            var savedEncryptions = _dbContext.Encryptions.ToList();
-            Assert.That(savedEncryptions, Is.Empty);
+            Assert.Multiple(() =>
+            {
+                Assert.That(() => _repository.Delete(encryption1.Id), Throws.Nothing);
+                Assert.That(() => _repository.Delete(encryption2), Throws.Nothing);
+                var savedEncryptions = _dbContext.Encryptions.ToList();
+                Assert.That(savedEncryptions, Is.Empty);
+            });
         }
 
         [Test]
         public void Delete_InvalidEncryption_ThrowsException()
         {
             // Act and Assert
-            Assert.That(() => _repository.Delete(1), Throws.Exception);
+            Assert.Multiple(() =>
+            {
+                Assert.That(() => _repository.Delete(1), Throws.Exception);
+                Assert.That(() => _repository.Delete(new Encryption() { Id = 1 }), Throws.Exception);
+            });
         }
     }
 }

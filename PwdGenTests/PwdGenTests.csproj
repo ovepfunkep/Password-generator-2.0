@@ -18,7 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PwdGenBLL\PwdGenBLL.csproj" />
     <ProjectReference Include="..\PwdGenDLL\PwdGenDLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="BLLTests\" />
   </ItemGroup>
 
 </Project>

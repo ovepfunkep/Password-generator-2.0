@@ -11,8 +11,8 @@ using PwdGenDLL;
 namespace PwdGenDLL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230727113615_initialMigration")]
-    partial class initialMigration
+    [Migration("20230802061322_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -6,11 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace PwdGenDLL.Models
 {
-    public class Key
+    public class KeyDTO
     {
         public int Id { get; set; }
         public string Value { get; set; } = null!;

@@ -5,19 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace PwdGenDLL.Models
 {
-    public class Settings
+    public class SettingsDTO
     {
         public int Id { get; set; }
         public DateTime? DateModified { get; set; }
-        public int EncryptionId { get; set; }
-        public int KeyId { get; set; }
-
-        // Relationships
-        public Encryption Encryption { get; set; } = null!;
-        public Key Key { get; set; } = null!;
+        public EncryptionDTO EncryptionDTO { get; set; } = null!;
+        public KeyDTO KeyDTO { get; set; } = null!;
     }
 }

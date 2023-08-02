@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace PwdGenDLL.Models
 {
-    public class Key
+    public class EncryptionDTO
     {
         public int Id { get; set; }
-        public string Value { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string? Description { get; set; } = null!;
+        public string? Link { get; set; }
     }
 }

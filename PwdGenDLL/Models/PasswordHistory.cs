@@ -14,7 +14,7 @@ namespace PwdGenDLL.Models
     {
         public int Id { get; set; }
         public string? SourceText { get; set; }
-        public string EncryptedText { get; set; }
+        public string EncryptedText { get; set; } = null!;
         public DateTime? Date { get; set; }
         public int? SettingsId { get; set; }
 

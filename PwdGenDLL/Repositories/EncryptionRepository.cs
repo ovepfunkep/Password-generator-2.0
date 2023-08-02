@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 using PwdGenDLL.Models;
 
@@ -28,48 +29,38 @@ namespace PwdGenDLL.Repositories.Implementations
 
         public Encryption? Get(int id) => _dbSet.Find(id);
 
-        public void Add(Encryption key)
+        public void Add(Encryption entity)
         {
-            _dbSet.Add(key);
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Detached;
-                throw;
-            }
+            _dbSet.Add(entity);
+            try { _dbContext.SaveChanges(); }
+            catch { _dbContext.Entry(entity).State = EntityState.Detached; throw; }
         }
 
-        public void Update(Encryption key)
+        public void Update(Encryption entity)
         {
-            _dbContext.Entry(key).State = EntityState.Modified;
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Unchanged;
-                throw;
-            }
+            _dbContext.Entry(entity).State = EntityState.Modified;
+            try { _dbContext.SaveChanges(); }
+            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 
-        public void Delete(Encryption key)
+        public void Delete(Encryption entity)
         {
             try
             {
-                _dbContext.Remove(key);
+                _dbContext.Remove(entity);
                 _dbContext.SaveChanges();
             }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Unchanged;
-                throw;
-            }
+            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 
-        public void Delete(int id) => Delete(_dbSet.Find(id));
+        public void Delete(int id)
+        {
+            try
+            {
+                _dbContext.Remove(_dbSet.Find(id) ?? throw new("Given entity was not found."));
+                _dbContext.SaveChanges();
+            }
+            catch { _dbContext.Entry(id).State = EntityState.Unchanged; throw; }
+        }
     }
 }

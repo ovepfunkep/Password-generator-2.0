@@ -16,17 +16,15 @@ namespace PwdGenTests.DLL.Repositories
         [SetUp]
         public void Setup()
         {
-            // Create a new SQLite database in-memory for testing
             _connection = new SqliteConnection("DataSource=:memory:");
             _connection.Open();
 
-            // Set up the DbContext with the SQLite connection
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseSqlite(_connection)
                 .Options;
 
             _dbContext = new AppDbContext(options);
-            _dbContext.Database.EnsureCreated(); // Create the database schema
+            _dbContext.Database.EnsureCreated(); 
 
             _repository = new KeyRepository(_dbContext);
         }
@@ -34,8 +32,8 @@ namespace PwdGenTests.DLL.Repositories
         [TearDown]
         public void TearDown()
         {
-            _dbContext.Dispose(); // Dispose the DbContext
-            _connection.Close(); // Close the SQLite connection
+            _dbContext.Dispose();
+            _connection.Close(); 
         }
 
         [Test]
@@ -104,15 +102,15 @@ namespace PwdGenTests.DLL.Repositories
 
             // Act
             var resultKey1 = _repository.Get(key1?.Id ?? 0);
-            var resultKey2 = _repository.Get(key2?.Id ?? 0);
+            var resultKey2 = _repository.Get(k => k.Id == key2.Id);
 
             // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(resultKey1, Is.Not.Null);
-                Assert.That(resultKey2, Is.Not.Null);
+                Assert.That(resultKey2, Is.Not.Empty);
                 Assert.That(resultKey1, Is.EqualTo(key1));
-                Assert.That(resultKey2, Is.EqualTo(key2));
+                Assert.That(resultKey2.First(), Is.EqualTo(key2));
             });
         }
 
@@ -124,10 +122,15 @@ namespace PwdGenTests.DLL.Repositories
             _repository.Add(key);
 
             // Act
-            var result = _repository.Get(key.Id + 1);
+            var result1 = _repository.Get(key.Id + 1);
+            var result2 = _repository.Get(k => k.Id == (key.Id + 1));
 
             // Assert
-            Assert.That(result, Is.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result1, Is.Null);
+                Assert.That(result2, Is.Empty);
+            });
         }
 
         [Test]
@@ -175,20 +178,31 @@ namespace PwdGenTests.DLL.Repositories
         public void Delete_ValidKey_ThrowsException()
         {
             // Arrange
-            var key = new Key { Value = "TestKey" };
-            _repository.Add(key);
+            var key1 = new Key { Value = "TestKey1" };
+            var key2 = new Key { Value = "TestKey2" };
+            _repository.Add(key1);
+            _repository.Add(key2);
 
             // Act and Assert
-            Assert.That(() => _repository.Delete(key.Id), Throws.Nothing);
-            var savedKeys = _dbContext.Keys.ToList();
-            Assert.That(savedKeys, Is.Empty);
+            Assert.Multiple(() =>
+            {
+                Assert.That(() => _repository.Delete(key1.Id), Throws.Nothing);
+                Assert.That(() => _repository.Delete(key2), Throws.Nothing);
+                var savedKeys = _dbContext.Keys.ToList();
+                Assert.That(savedKeys, Is.Empty);
+
+            });
         }
 
         [Test]
         public void Delete_InvalidKey_ThrowsException()
         {
             // Act and Assert
-            Assert.That(() => _repository.Delete(1), Throws.Exception);
+            Assert.Multiple(() =>
+            {
+                Assert.That(() => _repository.Delete(1), Throws.Exception);
+                Assert.That(() => _repository.Delete(new Key() { Id = 1 }), Throws.Exception);
+            });
         }
     }
 }

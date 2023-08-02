@@ -27,48 +27,37 @@ namespace PwdGenDLL.Repositories.Implementations
                                               .Include(s => s.Key)
                                               .FirstOrDefault(s => s.Id == id);
 
-        public void Add(Settings key)
+        public void Add(Settings entity)
         {
-            _dbSet.Add(key);
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Detached;
-                throw;
-            }
+            _dbSet.Add(entity);
+            try { _dbContext.SaveChanges(); }
+            catch { _dbContext.Entry(entity).State = EntityState.Detached; throw; }
         }
 
-        public void Update(Settings key)
+        public void Update(Settings entity)
         {
-            _dbContext.Entry(key).State = EntityState.Modified;
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Unchanged;
-                throw;
-            }
+            _dbContext.Entry(entity).State = EntityState.Modified;
+            try { _dbContext.SaveChanges(); }
+            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 
-        public void Delete(Settings key)
+        public void Delete(Settings entity)
         {
             try
             {
-                _dbContext.Remove(key);
+                _dbContext.Remove(entity);
                 _dbContext.SaveChanges();
             }
-            catch
-            {
-                _dbContext.Entry(key).State = EntityState.Unchanged;
-                throw;
-            }
+            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 
-        public void Delete(int id) => Delete(_dbSet.Find(id));
+        public void Delete(int id) {
+            try
+            {
+                _dbContext.Remove(_dbSet.Find(id) ?? throw new("Given entity was not found."));
+                _dbContext.SaveChanges();
+            }
+            catch { _dbContext.Entry(id).State = EntityState.Unchanged; throw; }
+        }
     }
 }

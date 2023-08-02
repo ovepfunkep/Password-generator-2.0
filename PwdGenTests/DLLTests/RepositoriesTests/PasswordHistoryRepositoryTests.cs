@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace PwdGenTests.DLL.Repositories
 {
-    public class PasswordHistoryTests
+    public class PasswordHistoryRepositoryTests
     {
         private AppDbContext _dbContext;
         private PasswordHistoryRepository _repository;
@@ -35,7 +35,7 @@ namespace PwdGenTests.DLL.Repositories
         public void TearDown()
         {
             _dbContext.Dispose();
-            _connection.Close(); 
+            _connection.Close();
         }
 
         [Test]
@@ -112,11 +112,6 @@ namespace PwdGenTests.DLL.Repositories
                 EncryptedText = "TestEncryptedText2",
                 Date = DateTime.Now
             };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
-            _dbContext.Settings.Add(settings);
-            _dbContext.SaveChanges();
             _repository.Add(passwordHistory1);
             _repository.Add(passwordHistory2);
 
@@ -158,25 +153,20 @@ namespace PwdGenTests.DLL.Repositories
                 Date = DateTime.Now,
                 Settings = settings
             };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
-            _dbContext.Settings.Add(settings);
-            _dbContext.SaveChanges();
             _repository.Add(passwordHistory1);
             _repository.Add(passwordHistory2);
 
             // Act
             var resultPasswordHistory1 = _repository.Get(passwordHistory1.Id);
-            var resultPasswordHistory2 = _repository.Get(passwordHistory2.Id);
+            var resultPasswordHistory2 = _repository.Get(p => p.Id == passwordHistory2.Id);
 
             // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(resultPasswordHistory1, Is.Not.Null);
-                Assert.That(resultPasswordHistory2, Is.Not.Null);
+                Assert.That(resultPasswordHistory2, Is.Not.Empty);
                 Assert.That(resultPasswordHistory1, Is.EqualTo(passwordHistory1));
-                Assert.That(resultPasswordHistory2, Is.EqualTo(passwordHistory2));
+                Assert.That(resultPasswordHistory2.First(), Is.EqualTo(passwordHistory2));
             });
         }
 
@@ -187,26 +177,35 @@ namespace PwdGenTests.DLL.Repositories
             var encryption = new Encryption { Id = 1, Name = "AES" };
             var key = new Key { Id = 1, Value = "TestKey" };
             var settings = new Settings { Id = 1, Encryption = encryption, Key = key };
-            var passwordHistory = new PasswordHistory
+            var passwordHistory1 = new PasswordHistory
             {
                 Id = 1,
-                SourceText = "TestSourceText",
-                EncryptedText = "TestEncryptedText",
+                SourceText = "TestSourceText1",
+                EncryptedText = "TestEncryptedText1",
                 Date = DateTime.Now,
                 Settings = settings
             };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
-            _dbContext.Settings.Add(settings);
-            _dbContext.SaveChanges();
-            _repository.Add(passwordHistory);
+            var passwordHistory2 = new PasswordHistory
+            {
+                Id = 2,
+                SourceText = "TestSourceText2",
+                EncryptedText = "TestEncryptedText2",
+                Date = DateTime.Now,
+                Settings = settings
+            };
+            _repository.Add(passwordHistory1);
+            _repository.Add(passwordHistory2);
 
             // Act
-            var result = _repository.Get(passwordHistory.Id + 1);
+            var result1 = _repository.Get(passwordHistory1.Id + 2);
+            var result2 = _repository.Get(p => p.Id == (passwordHistory2.Id + 1));
 
             // Assert
-            Assert.That(result, Is.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result1, Is.Null);
+                Assert.That(result2, Is.Empty);
+            });
         }
 
         [Test]
@@ -224,11 +223,6 @@ namespace PwdGenTests.DLL.Repositories
                 Date = DateTime.Now,
                 Settings = settings
             };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
-            _dbContext.Settings.Add(settings);
-            _dbContext.SaveChanges();
             _repository.Add(passwordHistory);
 
             // Act
@@ -263,19 +257,14 @@ namespace PwdGenTests.DLL.Repositories
                 Date = DateTime.Now,
                 Settings = settings
             };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
-            _dbContext.Settings.Add(settings);
-            _dbContext.SaveChanges();
             _repository.Add(passwordHistory);
 
             // Act and Assert
             Assert.Multiple(() =>
             {
                 Assert.That(() => _repository.Update(new PasswordHistory { Id = 2 }), Throws.Exception);
-                passwordHistory.EncryptedText = "ThisIsAPasswordHistoryWithVeryLongEncryptedTextValueThatExceedsTheMaximumLengthAllowedByTheDatabaseModelHaveAGoodDayNowSir";
-                Assert.That(() => _repository.Update(new PasswordHistory { Id = 2 }), Throws.Exception);
+                passwordHistory.SourceText = "ThisIsAPasswordHistoryWithVeryLongEncryptedTextValueThatExceedsTheMaximumLengthAllowedByTheDatabaseModelHaveAGoodDayNowSir";
+                Assert.That(() => _repository.Update(passwordHistory), Throws.Exception);
             });
         }
 
@@ -286,32 +275,44 @@ namespace PwdGenTests.DLL.Repositories
             var encryption = new Encryption { Id = 1, Name = "AES" };
             var key = new Key { Id = 1, Value = "TestKey" };
             var settings = new Settings { Id = 1, Encryption = encryption, Key = key };
-            var passwordHistory = new PasswordHistory
+            var passwordHistory1 = new PasswordHistory
             {
                 Id = 1,
-                SourceText = "TestSourceText",
-                EncryptedText = "TestEncryptedText",
+                SourceText = "TestSourceText1",
+                EncryptedText = "TestEncryptedText1",
                 Date = DateTime.Now,
                 Settings = settings
             };
-            _dbContext.Encryptions.Add(encryption);
-            _dbContext.Keys.Add(key);
-            _dbContext.SaveChanges();
-            _dbContext.Settings.Add(settings);
-            _dbContext.SaveChanges();
-            _repository.Add(passwordHistory);
+            var passwordHistory2 = new PasswordHistory
+            {
+                Id = 2,
+                SourceText = "TestSourceText2",
+                EncryptedText = "TestEncryptedText2",
+                Date = DateTime.Now,
+                Settings = settings
+            };
+            _repository.Add(passwordHistory1);
+            _repository.Add(passwordHistory2);
 
             // Act and Assert
-            Assert.That(() => _repository.Delete(passwordHistory.Id), Throws.Nothing);
-            var savedPasswordHistories = _dbContext.PasswordHistories.ToList();
-            Assert.That(savedPasswordHistories, Is.Empty);
+            Assert.Multiple(() =>
+            {
+                Assert.That(() => _repository.Delete(passwordHistory1.Id), Throws.Nothing);
+                Assert.That(() => _repository.Delete(passwordHistory2), Throws.Nothing);
+                var savedPasswordHistories = _dbContext.PasswordHistories.ToList();
+                Assert.That(savedPasswordHistories, Is.Empty);
+            });
         }
 
         [Test]
         public void Delete_InvalidPasswordHistory_ThrowsException()
         {
             // Act and Assert
-            Assert.That(() => _repository.Delete(1), Throws.Exception);
+            Assert.Multiple(() =>
+            {
+                Assert.That(() => _repository.Delete(1), Throws.Exception);
+                Assert.That(() => _repository.Delete(new PasswordHistory() { Id = 1 }), Throws.Exception);
+            });
         }
     }
 }
