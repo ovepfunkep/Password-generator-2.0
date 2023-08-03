@@ -11,6 +11,12 @@ namespace PwdGenDLL.Models
     public class KeyDTO
     {
         public int Id { get; set; }
-        public string Value { get; set; } = null!;
+        public string Value { get; set; }
+
+        public KeyDTO(string value, int id = 0)
+        {
+            Id = id;
+            Value = value;
+        }
     }
 }

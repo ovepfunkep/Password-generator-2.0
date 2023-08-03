@@ -17,35 +17,28 @@ namespace PwdGenBLL.Converters
             _settingsConverter = settingsConverter;
         }
 
-        public override PasswordHistoryDTO ConvertToDTO(PasswordHistory passwordHistory)
+        public override PasswordHistoryDTO ConvertToDTO(PasswordHistory entity)
         {
-            var settingsDTO = passwordHistory.Settings != null ?
-                                        _settingsConverter.ConvertToDTO(passwordHistory.Settings) :
+            var settingsDTO = entity.Settings != null ?
+                                        _settingsConverter.ConvertToDTO(entity.Settings) :
                                         null;
 
-            return new PasswordHistoryDTO
-            {
-                Id = passwordHistory.Id,
-                SourceText = passwordHistory.SourceText,
-                EncryptedText = passwordHistory.EncryptedText,
-                Date = passwordHistory.Date,
-                SettingsDTO = settingsDTO
-            };
+            return new PasswordHistoryDTO (entity.EncryptedText, entity.Id, entity.SourceText, entity.Date, settingsDTO);
         }
 
-        public override PasswordHistory ConvertToEntity(PasswordHistoryDTO dto)
+        public override PasswordHistory ConvertToEntity(PasswordHistoryDTO entityDTO)
         {
-            var settingsEntity = dto.SettingsDTO != null ?
-                                         _settingsConverter.ConvertToEntity(dto.SettingsDTO) :
+            var settingsEntity = entityDTO.SettingsDTO != null ?
+                                         _settingsConverter.ConvertToEntity(entityDTO.SettingsDTO) :
                                          null;
 
             return new PasswordHistory()
             {
-                Id = dto.Id,
-                SourceText = dto.SourceText,
-                EncryptedText = dto.EncryptedText,
-                Date = dto.Date,
-                SettingsId = dto.SettingsDTO?.Id,
+                Id = entityDTO.Id,
+                SourceText = entityDTO.SourceText,
+                EncryptedText = entityDTO.EncryptedText,
+                Date = entityDTO.Date,
+                SettingsId = entityDTO.SettingsDTO?.Id,
                 Settings = settingsEntity
             };
         }

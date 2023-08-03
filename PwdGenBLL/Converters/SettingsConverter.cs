@@ -20,18 +20,12 @@ namespace PwdGenBLL.Converters
             _keyConverter = keyConverter;
         }
 
-        public override SettingsDTO ConvertToDTO(Settings settings)
+        public override SettingsDTO ConvertToDTO(Settings entity)
         {
-            var encryptionDTO = _encryptionConverter.ConvertToDTO(settings.Encryption);
-            var keyDTO = _keyConverter.ConvertToDTO(settings.Key);
+            var encryptionDTO = _encryptionConverter.ConvertToDTO(entity.Encryption);
+            var keyDTO = _keyConverter.ConvertToDTO(entity.Key);
 
-            return new SettingsDTO 
-            {
-                Id = settings.Id,
-                DateModified = settings.DateModified,
-                EncryptionDTO = encryptionDTO,
-                KeyDTO = keyDTO
-            };
+            return new SettingsDTO (encryptionDTO, keyDTO, entity.DateModified, entity.Id);
         }
 
         public override Settings ConvertToEntity(SettingsDTO dto) => new()

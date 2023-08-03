@@ -94,6 +94,32 @@ namespace PwdGenDLL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PwdGenDLL.Models.Service", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("IconPath")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PasswordHistoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PasswordHistoryId");
+
+                    b.ToTable("Services", t =>
+                        {
+                            t.HasCheckConstraint("CHK_Service_Name_MaxLength", "LENGTH(Name) <= 100");
+                        });
+                });
+
             modelBuilder.Entity("PwdGenDLL.Models.Settings", b =>
                 {
                     b.Property<int>("Id")
@@ -126,6 +152,17 @@ namespace PwdGenDLL.Migrations
                         .HasForeignKey("SettingsId");
 
                     b.Navigation("Settings");
+                });
+
+            modelBuilder.Entity("PwdGenDLL.Models.Service", b =>
+                {
+                    b.HasOne("PwdGenDLL.Models.PasswordHistory", "PasswordHistory")
+                        .WithMany()
+                        .HasForeignKey("PasswordHistoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PasswordHistory");
                 });
 
             modelBuilder.Entity("PwdGenDLL.Models.Settings", b =>

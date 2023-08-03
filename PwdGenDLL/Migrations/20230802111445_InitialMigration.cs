@@ -90,6 +90,28 @@ namespace PwdGenDLL.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Services",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    PasswordHistoryId = table.Column<int>(type: "INTEGER", nullable: false),
+                    IconPath = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Services", x => x.Id);
+                    table.CheckConstraint("CHK_Service_Name_MaxLength", "LENGTH(Name) <= 100");
+                    table.ForeignKey(
+                        name: "FK_Services_PasswordHistories_PasswordHistoryId",
+                        column: x => x.PasswordHistoryId,
+                        principalTable: "PasswordHistories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Encryptions_Name",
                 table: "Encryptions",
@@ -108,6 +130,11 @@ namespace PwdGenDLL.Migrations
                 column: "SettingsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Services_PasswordHistoryId",
+                table: "Services",
+                column: "PasswordHistoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Settings_EncryptionId_KeyId",
                 table: "Settings",
                 columns: new[] { "EncryptionId", "KeyId" },
@@ -122,6 +149,9 @@ namespace PwdGenDLL.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Services");
+
             migrationBuilder.DropTable(
                 name: "PasswordHistories");
 

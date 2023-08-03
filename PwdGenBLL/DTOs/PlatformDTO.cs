@@ -6,21 +6,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using PwdGenDLL.Models;
+
 namespace PwdGenDLL.Models
 {
-    public class EncryptionDTO
+    public class PlatformDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string? Description { get; set; }
-        public string? Link { get; set; }
+        public PasswordHistoryDTO PasswordHistoryDTO { get; set; }
+        public string? IconPath { get; set; }
 
-        public EncryptionDTO(string name, int id = 0, string? description = null, string? link = null)
+        public PlatformDTO(string name, PasswordHistoryDTO passwordHistoryDTO, int id = 0, string? iconPath = null)
         {
             Id = id;
             Name = name;
-            Description = description;
-            Link = link;
+            PasswordHistoryDTO = passwordHistoryDTO;
+            IconPath = iconPath;
         }
     }
 }

@@ -11,7 +11,15 @@ namespace PwdGenDLL.Models
     {
         public int Id { get; set; }
         public DateTime? DateModified { get; set; }
-        public EncryptionDTO EncryptionDTO { get; set; } = null!;
-        public KeyDTO KeyDTO { get; set; } = null!;
+        public EncryptionDTO EncryptionDTO { get; set; }
+        public KeyDTO KeyDTO { get; set; }
+
+        public SettingsDTO(EncryptionDTO encryptionDTO, KeyDTO keyDTO, DateTime? dateModified = null, int id = 0)
+        {
+            Id = id;
+            DateModified = dateModified;
+            EncryptionDTO = encryptionDTO;
+            KeyDTO = keyDTO;
+        }
     }
 }

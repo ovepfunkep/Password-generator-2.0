@@ -10,16 +10,12 @@ namespace PwdGenBLL.Converters
 {
     public class KeyConverter : GenericConverter<KeyDTO, Key>
     {
-        public override KeyDTO ConvertToDTO(Key key) => new() 
-        { 
-            Id = key.Id, 
-            Value = key.Value 
-        };
+        public override KeyDTO ConvertToDTO(Key entity) => new(entity.Value, entity.Id);
 
-        public override Key ConvertToEntity(KeyDTO dto) => new() 
+        public override Key ConvertToEntity(KeyDTO entityDTO) => new() 
         { 
-            Id = dto.Id,
-            Value = dto.Value
+            Id = entityDTO.Id,
+            Value = entityDTO.Value
         };
     }
 }

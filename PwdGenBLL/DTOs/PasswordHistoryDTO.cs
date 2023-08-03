@@ -14,10 +14,17 @@ namespace PwdGenDLL.Models
     {
         public int Id { get; set; }
         public string? SourceText { get; set; }
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string EncryptedText { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public DateTime? Date { get; set; }
         public SettingsDTO? SettingsDTO { get; set; }
+
+        public PasswordHistoryDTO(string encryptedText, int id = 0, string? sourceText = null, DateTime? date = null, SettingsDTO? settingsDTO = null)
+        {
+            Id = id;
+            SourceText = sourceText;
+            EncryptedText = encryptedText;
+            Date = date;
+            SettingsDTO = settingsDTO;
+        }
     }
 }
