@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PwdGenDLL.Models
+﻿namespace PwdGenDLL.Models
 {
     public class KeyDTO
     {
@@ -17,6 +9,18 @@ namespace PwdGenDLL.Models
         {
             Id = id;
             Value = value;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is KeyDTO dTO &&
+                   Id == dTO.Id &&
+                   Value == dTO.Value;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Value);
         }
     }
 }

@@ -7,7 +7,7 @@ using PwdGenDLL.Repositories.Implementations;
 
 namespace PwdGenTests.DLL.Repositories
 {
-    public class PlatformRepositoryTests
+    public class PlatformServiceTests
     {
         private AppDbContext _dbContext;
         private PlatformRepository _repository;
@@ -200,7 +200,7 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Get_InvalidPlatform_ReturnsNull()
+        public void Get_InvalidPlatform_ReturnsNullOrEmpty()
         {
             // Arrange
             var encryption = new Encryption { Id = 1, Name = "AES" };
@@ -318,7 +318,7 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Delete_ValidPlatform_ThrowsException()
+        public void Delete_ValidPlatform()
         {
             // Arrange
             var encryption = new Encryption { Id = 1, Name = "AES" };
@@ -332,33 +332,18 @@ namespace PwdGenTests.DLL.Repositories
                 Date = DateTime.Now,
                 Settings = settings
             };
-            var passwordHistory2 = new PasswordHistory
-            {
-                Id = 2,
-                SourceText = "TestSourceText2",
-                EncryptedText = "TestEncryptedText2",
-                Date = DateTime.Now,
-                Settings = settings
-            };
             var platform1 = new Platform
             {
                 Name = "TestPlatform1",
                 PasswordHistory = passwordHistory1
             };
-            var platform2 = new Platform
-            {
-                Name = "TestPlatform2",
-                PasswordHistory = passwordHistory2
-            };
 
             _repository.Add(platform1);
-            _repository.Add(platform2);
 
             // Act and Assert
             Assert.Multiple(() =>
             {
                 Assert.That(() => _repository.Delete(platform1.Id), Throws.Nothing);
-                Assert.That(() => _repository.Delete(platform2), Throws.Nothing);
                 var savedPasswordHistories = _dbContext.Platforms.ToList();
                 Assert.That(savedPasswordHistories, Is.Empty);
             });
@@ -368,11 +353,7 @@ namespace PwdGenTests.DLL.Repositories
         public void Delete_InvalidPlatform_ThrowsException()
         {
             // Act and Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(() => _repository.Delete(1), Throws.Exception);
-                Assert.That(() => _repository.Delete(new Platform() { Id = 1 }), Throws.Exception);
-            });
+            Assert.That(() => _repository.Delete(1), Throws.Exception);
         }
     }
 }

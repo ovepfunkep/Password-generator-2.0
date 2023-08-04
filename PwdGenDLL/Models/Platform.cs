@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace PwdGenDLL.Models
+﻿namespace PwdGenDLL.Models
 {
     public class Platform
     {
@@ -17,6 +8,6 @@ namespace PwdGenDLL.Models
         public string? IconPath { get; set; }
 
         // Relationships
-        public PasswordHistory PasswordHistory { get; set;} = null!;
+        public PasswordHistory PasswordHistory { get; set; } = null!;
     }
 }

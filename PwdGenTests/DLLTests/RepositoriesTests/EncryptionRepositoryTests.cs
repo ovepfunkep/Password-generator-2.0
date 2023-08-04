@@ -7,7 +7,7 @@ using PwdGenDLL.Repositories.Implementations;
 
 namespace PwdGenTests.DLL.Repositories
 {
-    public class EncryptionRepositoryTests
+    public class EncryptionServiceTests
     {
         private AppDbContext _dbContext;
         private EncryptionRepository _repository;
@@ -115,7 +115,7 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Get_InvalidEncryption_ReturnsNull()
+        public void Get_InvalidEncryption_ReturnsNullOrEmpty()
         {
             // Arrange
             var encryption = new Encryption { Name = "TestEncryption" };
@@ -172,19 +172,16 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Delete_ValidEncryption_ThrowsException()
+        public void Delete_ValidEncryption()
         {
             // Arrange
             var encryption1 = new Encryption { Name = "TestEncryption1" };
-            var encryption2 = new Encryption { Name = "TestEncryption2" };
             _repository.Add(encryption1);
-            _repository.Add(encryption2);
-            
+
             // Act and Assert
             Assert.Multiple(() =>
             {
                 Assert.That(() => _repository.Delete(encryption1.Id), Throws.Nothing);
-                Assert.That(() => _repository.Delete(encryption2), Throws.Nothing);
                 var savedEncryptions = _dbContext.Encryptions.ToList();
                 Assert.That(savedEncryptions, Is.Empty);
             });
@@ -194,11 +191,7 @@ namespace PwdGenTests.DLL.Repositories
         public void Delete_InvalidEncryption_ThrowsException()
         {
             // Act and Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(() => _repository.Delete(1), Throws.Exception);
-                Assert.That(() => _repository.Delete(new Encryption() { Id = 1 }), Throws.Exception);
-            });
+            Assert.That(() => _repository.Delete(1), Throws.Exception);
         }
     }
 }

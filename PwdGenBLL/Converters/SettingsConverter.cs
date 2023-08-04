@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using PwdGenDLL.Models;
+﻿using PwdGenDLL.Models;
 
 namespace PwdGenBLL.Converters
 {
     public class SettingsConverter : GenericConverter<SettingsDTO, Settings>
     {
-        private readonly GenericConverter<EncryptionDTO, Encryption> _encryptionConverter;
-        private readonly GenericConverter<KeyDTO, Key> _keyConverter;
+        private readonly EncryptionConverter _encryptionConverter;
+        private readonly KeyConverter _keyConverter;
 
-        public SettingsConverter(GenericConverter<EncryptionDTO, Encryption> encryptionConverter,
-                                 GenericConverter<KeyDTO, Key> keyConverter)
+        public SettingsConverter(EncryptionConverter encryptionConverter,
+                                 KeyConverter keyConverter)
         {
             _encryptionConverter = encryptionConverter;
             _keyConverter = keyConverter;
@@ -25,15 +19,21 @@ namespace PwdGenBLL.Converters
             var encryptionDTO = _encryptionConverter.ConvertToDTO(entity.Encryption);
             var keyDTO = _keyConverter.ConvertToDTO(entity.Key);
 
-            return new SettingsDTO (encryptionDTO, keyDTO, entity.DateModified, entity.Id);
+            return new SettingsDTO(encryptionDTO, keyDTO, entity.DateModified, entity.Id);
         }
 
-        public override Settings ConvertToEntity(SettingsDTO dto) => new()
+        public override Settings ConvertToEntity(SettingsDTO entity)
+        {
+            var encryption = _encryptionConverter.ConvertToEntity(entity.EncryptionDTO);
+            var key = _keyConverter.ConvertToEntity(entity.KeyDTO);
+
+            return new Settings
             {
-                Id = dto.Id,
-                DateModified = dto.DateModified,
-                EncryptionId = dto.EncryptionDTO.Id,
-                KeyId = dto.KeyDTO.Id
+                Id = entity.Id,
+                Encryption = encryption,
+                Key = key,
+                DateModified = entity.DateModified
             };
+        }
     }
 }

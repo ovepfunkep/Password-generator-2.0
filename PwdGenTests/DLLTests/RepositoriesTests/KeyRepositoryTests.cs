@@ -7,7 +7,7 @@ using PwdGenDLL.Repositories.Implementations;
 
 namespace PwdGenTests.DLL.Repositories
 {
-    public class KeyRepositoryTests
+    public class KeyServiceTests
     {
         private AppDbContext _dbContext;
         private KeyRepository _repository;
@@ -24,7 +24,7 @@ namespace PwdGenTests.DLL.Repositories
                 .Options;
 
             _dbContext = new AppDbContext(options);
-            _dbContext.Database.EnsureCreated(); 
+            _dbContext.Database.EnsureCreated();
 
             _repository = new KeyRepository(_dbContext);
         }
@@ -33,7 +33,7 @@ namespace PwdGenTests.DLL.Repositories
         public void TearDown()
         {
             _dbContext.Dispose();
-            _connection.Close(); 
+            _connection.Close();
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Get_InvalidKey_ReturnsNull()
+        public void Get_InvalidKey_ReturnsNullOrEmpty()
         {
             // Arrange
             var key = new Key { Value = "TestKey" };
@@ -175,19 +175,16 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Delete_ValidKey_ThrowsException()
+        public void Delete_ValidKey()
         {
             // Arrange
             var key1 = new Key { Value = "TestKey1" };
-            var key2 = new Key { Value = "TestKey2" };
             _repository.Add(key1);
-            _repository.Add(key2);
 
             // Act and Assert
             Assert.Multiple(() =>
             {
                 Assert.That(() => _repository.Delete(key1.Id), Throws.Nothing);
-                Assert.That(() => _repository.Delete(key2), Throws.Nothing);
                 var savedKeys = _dbContext.Keys.ToList();
                 Assert.That(savedKeys, Is.Empty);
 
@@ -198,11 +195,7 @@ namespace PwdGenTests.DLL.Repositories
         public void Delete_InvalidKey_ThrowsException()
         {
             // Act and Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(() => _repository.Delete(1), Throws.Exception);
-                Assert.That(() => _repository.Delete(new Key() { Id = 1 }), Throws.Exception);
-            });
+            Assert.That(() => _repository.Delete(1), Throws.Exception);
         }
     }
 }

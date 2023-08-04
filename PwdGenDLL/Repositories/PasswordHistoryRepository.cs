@@ -82,23 +82,13 @@ namespace PwdGenDLL.Repositories.Implementations
         {
             _dbSet.Add(entity);
             try { _dbContext.SaveChanges(); }
-            catch { _dbContext.Entry(entity).State = EntityState.Detached; throw; }
+            catch { _dbContext.Entry(_dbSet.Find(entity.Id) ?? throw new("Given entity was not found.")).State = EntityState.Detached; throw; }
         }
 
         public void Update(PasswordHistory entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
             try { _dbContext.SaveChanges(); }
-            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
-        }
-
-        public void Delete(PasswordHistory entity)
-        {
-            try
-            {
-                _dbContext.Remove(entity);
-                _dbContext.SaveChanges();
-            }
             catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 

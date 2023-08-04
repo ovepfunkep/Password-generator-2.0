@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using PwdGenDLL.Models;
-
-namespace PwdGenDLL.Models
+﻿namespace PwdGenDLL.Models
 {
     public class PlatformDTO
     {
@@ -23,6 +13,20 @@ namespace PwdGenDLL.Models
             Name = name;
             PasswordHistoryDTO = passwordHistoryDTO;
             IconPath = iconPath;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PlatformDTO dTO &&
+                   Id == dTO.Id &&
+                   Name == dTO.Name &&
+                   EqualityComparer<PasswordHistoryDTO>.Default.Equals(PasswordHistoryDTO, dTO.PasswordHistoryDTO) &&
+                   IconPath == dTO.IconPath;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name, PasswordHistoryDTO, IconPath);
         }
     }
 }

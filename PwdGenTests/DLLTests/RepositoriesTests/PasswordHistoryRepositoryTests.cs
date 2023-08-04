@@ -1,15 +1,13 @@
-﻿using NUnit.Framework;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+
 using PwdGenDLL;
 using PwdGenDLL.Models;
 using PwdGenDLL.Repositories.Implementations;
-using System;
-using System.Linq;
 
 namespace PwdGenTests.DLL.Repositories
 {
-    public class PasswordHistoryRepositoryTests
+    public class PasswordHistoryServiceTests
     {
         private AppDbContext _dbContext;
         private PasswordHistoryRepository _repository;
@@ -171,7 +169,7 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Get_InvalidPasswordHistory_ReturnsNull()
+        public void Get_InvalidPasswordHistory_ReturnsNullOrEmpty()
         {
             // Arrange
             var encryption = new Encryption { Id = 1, Name = "AES" };
@@ -269,7 +267,7 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Delete_ValidPasswordHistory_ThrowsException()
+        public void Delete_ValidPasswordHistory()
         {
             // Arrange
             var encryption = new Encryption { Id = 1, Name = "AES" };
@@ -283,22 +281,12 @@ namespace PwdGenTests.DLL.Repositories
                 Date = DateTime.Now,
                 Settings = settings
             };
-            var passwordHistory2 = new PasswordHistory
-            {
-                Id = 2,
-                SourceText = "TestSourceText2",
-                EncryptedText = "TestEncryptedText2",
-                Date = DateTime.Now,
-                Settings = settings
-            };
             _repository.Add(passwordHistory1);
-            _repository.Add(passwordHistory2);
 
             // Act and Assert
             Assert.Multiple(() =>
             {
                 Assert.That(() => _repository.Delete(passwordHistory1.Id), Throws.Nothing);
-                Assert.That(() => _repository.Delete(passwordHistory2), Throws.Nothing);
                 var savedPasswordHistories = _dbContext.PasswordHistories.ToList();
                 Assert.That(savedPasswordHistories, Is.Empty);
             });
@@ -308,11 +296,7 @@ namespace PwdGenTests.DLL.Repositories
         public void Delete_InvalidPasswordHistory_ThrowsException()
         {
             // Act and Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(() => _repository.Delete(1), Throws.Exception);
-                Assert.That(() => _repository.Delete(new PasswordHistory() { Id = 1 }), Throws.Exception);
-            });
+            Assert.That(() => _repository.Delete(1), Throws.Exception);
         }
     }
 }

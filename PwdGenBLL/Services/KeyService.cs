@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PwdGenBLL.Converters;
 
-using Microsoft.EntityFrameworkCore;
-
-using PwdGenBLL.Converters;
 using PwdGenDLL.Models;
 using PwdGenDLL.Repositories.Implementations;
 
@@ -37,11 +30,11 @@ namespace PwdGenBLL.Services
             return dto;
         }
 
-        public IEnumerable<KeyDTO>? Get(Func<Key, bool> predicate)
+        public IEnumerable<KeyDTO> Get(Func<Key, bool> predicate)
         {
             var entities = _repository.Get(predicate);
-            var dto = entities != null ? _converter.ConvertToDTOs(entities) : null;
-            return dto;
+            var dtos = _converter.ConvertToDTOs(entities);
+            return dtos;
         }
 
         public KeyDTO? Add(KeyDTO dto)
@@ -51,15 +44,17 @@ namespace PwdGenBLL.Services
             return _converter.ConvertToDTO(entity);
         }
 
-        public KeyDTO? Update(KeyDTO dto)
+        public KeyDTO Update(KeyDTO dto)
         {
             var entity = _converter.ConvertToEntity(dto);
-            _repository.Update(entity);
-            return _converter.ConvertToDTO(entity);
+            var dbEntity = _repository.Get(entity.Id) ?? throw new Exception("Given entity was not found.");
+
+            dbEntity.Value = dto.Value;
+            _repository.Update(dbEntity);
+
+            return _converter.ConvertToDTO(dbEntity);
         }
 
-        public void Delete(KeyDTO dto) => _repository.Delete(_converter.ConvertToEntity(dto));
-
-        public void Delete(int id) => _repository.Delete(id); 
+        public void Delete(int id) => _repository.Delete(id);
     }
 }

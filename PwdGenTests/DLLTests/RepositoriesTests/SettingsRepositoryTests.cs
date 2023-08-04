@@ -7,7 +7,7 @@ using PwdGenDLL.Repositories.Implementations;
 
 namespace PwdGenTests.DLL.Repositories
 {
-    public class SettingsRepositoryTests
+    public class SettingsServiceTests
     {
         private AppDbContext _dbContext;
         private SettingsRepository _repository;
@@ -135,7 +135,7 @@ namespace PwdGenTests.DLL.Repositories
         }
 
         [Test]
-        public void Get_InvalidSettings_ReturnsNull()
+        public void Get_InvalidSettings_ReturnsNullOrEmpty()
         {
             // Arrange
             var encryption = new Encryption { Id = 1, Name = "AES" };
@@ -211,18 +211,14 @@ namespace PwdGenTests.DLL.Repositories
         {
             // Arrange
             var encryption1 = new Encryption { Id = 1, Name = "AES1" };
-            var encryption2 = new Encryption { Id = 2, Name = "AES2" };
             var key = new Key { Id = 1, Value = "TestKey" };
             var settings1 = new Settings { Id = 1, Encryption = encryption1, Key = key };
-            var settings2 = new Settings { Id = 2, Encryption = encryption2, Key = key };
             _repository.Add(settings1);
-            _repository.Add(settings2);
 
             // Act and Assert
             Assert.Multiple(() =>
             {
                 Assert.That(() => _repository.Delete(settings1.Id), Throws.Nothing);
-                Assert.That(() => _repository.Delete(settings2), Throws.Nothing);
                 var savedSettings = _dbContext.Settings.ToList();
                 Assert.That(savedSettings, Is.Empty);
             });
@@ -233,7 +229,6 @@ namespace PwdGenTests.DLL.Repositories
         {
             // Act and Assert
             Assert.That(() => _repository.Delete(1), Throws.Exception);
-            Assert.That(() => _repository.Delete(new Settings() { Id = 1}), Throws.Exception);
         }
     }
 }

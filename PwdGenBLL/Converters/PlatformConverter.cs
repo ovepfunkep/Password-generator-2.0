@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using PwdGenDLL.Models;
+﻿using PwdGenDLL.Models;
 
 namespace PwdGenBLL.Converters
 {
     public class PlatformConverter : GenericConverter<PlatformDTO, Platform>
     {
-        private readonly GenericConverter<PasswordHistoryDTO, PasswordHistory> _passwordHistoryConverter;
+        private readonly PasswordHistoryConverter _passwordHistoryConverter;
 
-        public PlatformConverter(GenericConverter<PasswordHistoryDTO, PasswordHistory> passwordHistoryConverter)
+        public PlatformConverter(PasswordHistoryConverter passwordHistoryConverter)
         {
             _passwordHistoryConverter = passwordHistoryConverter;
         }
@@ -33,7 +27,7 @@ namespace PwdGenBLL.Converters
                 Id = entityDTO.Id,
                 Name = entityDTO.Name,
                 PasswordHistory = passwordHistoryEntity,
-                IconPath = entityDTO.IconPath                                          
+                IconPath = entityDTO.IconPath
             };
         }
     }

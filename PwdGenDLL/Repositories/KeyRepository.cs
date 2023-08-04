@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 using PwdGenDLL.Models;
 
@@ -37,18 +31,8 @@ namespace PwdGenDLL.Repositories.Implementations
 
         public void Update(Key entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            _dbContext.Entry(_dbSet.Find(entity.Id) ?? throw new("Given entity was not found.")).State = EntityState.Modified;
             try { _dbContext.SaveChanges(); }
-            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
-        }
-
-        public void Delete(Key entity)
-        {
-            try
-            {
-                _dbContext.Remove(entity);
-                _dbContext.SaveChanges();
-            }
             catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 

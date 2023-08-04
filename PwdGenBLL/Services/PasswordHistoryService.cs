@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PwdGenBLL.Converters;
 
-using PwdGenBLL.Converters;
 using PwdGenDLL.Models;
 using PwdGenDLL.Repositories.Implementations;
 
@@ -34,12 +29,12 @@ namespace PwdGenBLL.Services
             var dto = entity != null ? _converter.ConvertToDTO(entity) : null;
             return dto;
         }
-        
-        public IEnumerable<PasswordHistoryDTO>? Get(Func<PasswordHistory, bool> predicate)
+
+        public IEnumerable<PasswordHistoryDTO> Get(Func<PasswordHistory, bool> predicate)
         {
             var entities = _repository.Get(predicate);
-            var dto = entities != null ? _converter.ConvertToDTOs(entities) : null;
-            return dto;
+            var dtos = _converter.ConvertToDTOs(entities);
+            return dtos;
         }
 
         public PasswordHistoryDTO? Add(PasswordHistoryDTO dto)
@@ -49,14 +44,19 @@ namespace PwdGenBLL.Services
             return _converter.ConvertToDTO(entity);
         }
 
-        public PasswordHistoryDTO? Update(PasswordHistoryDTO dto)
+        public PasswordHistoryDTO Update(PasswordHistoryDTO dto)
         {
             var entity = _converter.ConvertToEntity(dto);
-            _repository.Update(entity);
-            return _converter.ConvertToDTO(entity);
-        }
+            var dbEntity = _repository.Get(entity.Id) ?? throw new Exception("Given entity was not found.");
 
-        public void Delete(PasswordHistoryDTO dto) => _repository.Delete(_converter.ConvertToEntity(dto));
+            dbEntity.EncryptedText = dto.EncryptedText;
+            dbEntity.SourceText = dto.SourceText;
+            dbEntity.Date = dto.Date;
+            dbEntity.SettingsId = dto.SettingsDTO?.Id;
+            _repository.Update(dbEntity);
+
+            return _converter.ConvertToDTO(dbEntity);
+        }
 
         public void Delete(int id) => _repository.Delete(id);
     }

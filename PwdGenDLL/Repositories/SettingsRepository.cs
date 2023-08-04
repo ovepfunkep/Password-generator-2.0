@@ -36,22 +36,13 @@ namespace PwdGenDLL.Repositories.Implementations
 
         public void Update(Settings entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            _dbContext.Entry(_dbSet.Find(entity.Id) ?? throw new("Given entity was not found.")).State = EntityState.Modified;
             try { _dbContext.SaveChanges(); }
             catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
         }
 
-        public void Delete(Settings entity)
+        public void Delete(int id)
         {
-            try
-            {
-                _dbContext.Remove(entity);
-                _dbContext.SaveChanges();
-            }
-            catch { _dbContext.Entry(entity).State = EntityState.Unchanged; throw; }
-        }
-
-        public void Delete(int id) {
             try
             {
                 _dbContext.Remove(_dbSet.Find(id) ?? throw new("Given entity was not found."));

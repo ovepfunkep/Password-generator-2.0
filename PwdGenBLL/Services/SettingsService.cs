@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PwdGenBLL.Converters;
 
-using PwdGenBLL.Converters;
 using PwdGenDLL.Models;
 using PwdGenDLL.Repositories.Implementations;
 
@@ -34,11 +29,12 @@ namespace PwdGenBLL.Services
             var dto = entity != null ? _converter.ConvertToDTO(entity) : null;
             return dto;
         }
-        public IEnumerable<SettingsDTO>? Get(Func<Settings, bool> predicate)
+
+        public IEnumerable<SettingsDTO> Get(Func<Settings, bool> predicate)
         {
             var entities = _repository.Get(predicate);
-            var dto = entities != null ? _converter.ConvertToDTOs(entities) : null;
-            return dto;
+            var dtos = _converter.ConvertToDTOs(entities);
+            return dtos;
         }
 
         public SettingsDTO? Add(SettingsDTO dto)
@@ -48,14 +44,20 @@ namespace PwdGenBLL.Services
             return _converter.ConvertToDTO(entity);
         }
 
-        public SettingsDTO? Update(SettingsDTO dto)
+        public SettingsDTO Update(SettingsDTO dto)
         {
             var entity = _converter.ConvertToEntity(dto);
-            _repository.Update(entity);
-            return _converter.ConvertToDTO(entity);
+            var dbEntity = _repository.Get(entity.Id) ?? throw new Exception("Given entity was not found.");
+
+            dbEntity.DateModified = dto.DateModified;
+            dbEntity.EncryptionId = dto.EncryptionDTO.Id;
+            dbEntity.KeyId = dto.EncryptionDTO.Id;
+
+            _repository.Update(dbEntity);
+
+            return _converter.ConvertToDTO(dbEntity);
         }
 
-        public void Delete(SettingsDTO dto) => _repository.Delete(_converter.ConvertToEntity(dto));
 
         public void Delete(int id) => _repository.Delete(id);
     }

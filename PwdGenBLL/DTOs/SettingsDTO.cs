@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PwdGenDLL.Models
+﻿namespace PwdGenDLL.Models
 {
     public class SettingsDTO
     {
@@ -20,6 +13,20 @@ namespace PwdGenDLL.Models
             DateModified = dateModified;
             EncryptionDTO = encryptionDTO;
             KeyDTO = keyDTO;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is SettingsDTO dTO &&
+                   Id == dTO.Id &&
+                   DateModified == dTO.DateModified &&
+                   EqualityComparer<EncryptionDTO>.Default.Equals(EncryptionDTO, dTO.EncryptionDTO) &&
+                   EqualityComparer<KeyDTO>.Default.Equals(KeyDTO, dTO.KeyDTO);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, DateModified, EncryptionDTO, KeyDTO);
         }
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using PwdGenDLL.Models;
+﻿using PwdGenDLL.Models;
 
 namespace PwdGenBLL.Converters
 {
@@ -12,8 +6,8 @@ namespace PwdGenBLL.Converters
     {
         public override KeyDTO ConvertToDTO(Key entity) => new(entity.Value, entity.Id);
 
-        public override Key ConvertToEntity(KeyDTO entityDTO) => new() 
-        { 
+        public override Key ConvertToEntity(KeyDTO entityDTO) => new()
+        {
             Id = entityDTO.Id,
             Value = entityDTO.Value
         };

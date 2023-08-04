@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using PwdGenDLL.Models;
+﻿using PwdGenDLL.Models;
 
 namespace PwdGenBLL.Converters
 {
     public class PasswordHistoryConverter : GenericConverter<PasswordHistoryDTO, PasswordHistory>
     {
-        private readonly GenericConverter<SettingsDTO, Settings> _settingsConverter;
+        private readonly SettingsConverter _settingsConverter;
 
-        public PasswordHistoryConverter(GenericConverter<SettingsDTO, Settings> settingsConverter)
+        public PasswordHistoryConverter(SettingsConverter settingsConverter)
         {
             _settingsConverter = settingsConverter;
         }
@@ -23,7 +17,7 @@ namespace PwdGenBLL.Converters
                                         _settingsConverter.ConvertToDTO(entity.Settings) :
                                         null;
 
-            return new PasswordHistoryDTO (entity.EncryptedText, entity.Id, entity.SourceText, entity.Date, settingsDTO);
+            return new PasswordHistoryDTO(entity.EncryptedText, entity.Id, entity.SourceText, entity.Date, settingsDTO);
         }
 
         public override PasswordHistory ConvertToEntity(PasswordHistoryDTO entityDTO)
