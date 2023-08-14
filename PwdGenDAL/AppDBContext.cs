@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using PwdGenDLL.Models;
+using PwdGenDAL.Models;
 
-namespace PwdGenDLL
+namespace PwdGenDAL
 {
     public class AppDbContext : DbContext
     {

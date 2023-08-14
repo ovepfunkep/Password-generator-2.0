@@ -1,7 +1,8 @@
 ﻿using PwdGenBLL.Converters;
+using PwdGenBLL.DTOs;
 
-using PwdGenDLL.Models;
-using PwdGenDLL.Repositories.Implementations;
+using PwdGenDAL.Models;
+using PwdGenDAL.Repositories.Implementations;
 
 namespace PwdGenBLL.Services
 {

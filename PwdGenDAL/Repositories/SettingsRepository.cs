@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using PwdGenDLL.Models;
+using PwdGenDAL.Models;
 
-namespace PwdGenDLL.Repositories.Implementations
+namespace PwdGenDAL.Repositories.Implementations
 {
 
     public class SettingsRepository

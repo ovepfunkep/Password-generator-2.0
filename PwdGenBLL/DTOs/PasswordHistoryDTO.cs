@@ -1,4 +1,4 @@
-﻿namespace PwdGenDLL.Models
+﻿namespace PwdGenBLL.DTOs
 {
     public class PasswordHistoryDTO
     {

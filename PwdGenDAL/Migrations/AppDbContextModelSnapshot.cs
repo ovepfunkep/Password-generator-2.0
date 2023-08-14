@@ -2,25 +2,22 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PwdGenDLL;
+using PwdGenDAL;
 
 #nullable disable
 
-namespace PwdGenDLL.Migrations
+namespace PwdGenDAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230802111445_InitialMigration")]
-    partial class InitialMigration
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0-preview.6.23329.4");
 
-            modelBuilder.Entity("PwdGenDLL.Models.Encryption", b =>
+            modelBuilder.Entity("PwdGenDAL.Models.Encryption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,7 +44,7 @@ namespace PwdGenDLL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PwdGenDLL.Models.Key", b =>
+            modelBuilder.Entity("PwdGenDAL.Models.Key", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,7 +65,7 @@ namespace PwdGenDLL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PwdGenDLL.Models.PasswordHistory", b =>
+            modelBuilder.Entity("PwdGenDAL.Models.PasswordHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -97,7 +94,7 @@ namespace PwdGenDLL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PwdGenDLL.Models.Service", b =>
+            modelBuilder.Entity("PwdGenDAL.Models.Platform", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,13 +114,13 @@ namespace PwdGenDLL.Migrations
 
                     b.HasIndex("PasswordHistoryId");
 
-                    b.ToTable("Services", t =>
+                    b.ToTable("Platforms", t =>
                         {
-                            t.HasCheckConstraint("CHK_Service_Name_MaxLength", "LENGTH(Name) <= 100");
+                            t.HasCheckConstraint("CHK_Platform_Name_MaxLength", "LENGTH(Name) <= 100");
                         });
                 });
 
-            modelBuilder.Entity("PwdGenDLL.Models.Settings", b =>
+            modelBuilder.Entity("PwdGenDAL.Models.Settings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,18 +145,18 @@ namespace PwdGenDLL.Migrations
                     b.ToTable("Settings");
                 });
 
-            modelBuilder.Entity("PwdGenDLL.Models.PasswordHistory", b =>
+            modelBuilder.Entity("PwdGenDAL.Models.PasswordHistory", b =>
                 {
-                    b.HasOne("PwdGenDLL.Models.Settings", "Settings")
+                    b.HasOne("PwdGenDAL.Models.Settings", "Settings")
                         .WithMany()
                         .HasForeignKey("SettingsId");
 
                     b.Navigation("Settings");
                 });
 
-            modelBuilder.Entity("PwdGenDLL.Models.Service", b =>
+            modelBuilder.Entity("PwdGenDAL.Models.Platform", b =>
                 {
-                    b.HasOne("PwdGenDLL.Models.PasswordHistory", "PasswordHistory")
+                    b.HasOne("PwdGenDAL.Models.PasswordHistory", "PasswordHistory")
                         .WithMany()
                         .HasForeignKey("PasswordHistoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -168,15 +165,15 @@ namespace PwdGenDLL.Migrations
                     b.Navigation("PasswordHistory");
                 });
 
-            modelBuilder.Entity("PwdGenDLL.Models.Settings", b =>
+            modelBuilder.Entity("PwdGenDAL.Models.Settings", b =>
                 {
-                    b.HasOne("PwdGenDLL.Models.Encryption", "Encryption")
+                    b.HasOne("PwdGenDAL.Models.Encryption", "Encryption")
                         .WithMany()
                         .HasForeignKey("EncryptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PwdGenDLL.Models.Key", "Key")
+                    b.HasOne("PwdGenDAL.Models.Key", "Key")
                         .WithMany()
                         .HasForeignKey("KeyId")
                         .OnDelete(DeleteBehavior.Cascade)

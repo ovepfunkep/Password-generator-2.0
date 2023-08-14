@@ -1,35 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using PwdGenDLL.Models;
+using PwdGenDAL.Models;
 
-namespace PwdGenDLL.Repositories.Implementations
+namespace PwdGenDAL.Repositories.Implementations
 {
 
-    public class KeyRepository
+    public class EncryptionRepository
     {
         private readonly AppDbContext _dbContext;
-        private readonly DbSet<Key> _dbSet;
+        private readonly DbSet<Encryption> _dbSet;
 
-        public KeyRepository(AppDbContext dbContext)
+        public EncryptionRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
-            _dbSet = dbContext.Set<Key>();
+            _dbSet = dbContext.Set<Encryption>();
         }
 
-        public IEnumerable<Key> Get() => _dbSet.ToList();
+        public IEnumerable<Encryption> Get() => _dbSet.ToList();
 
-        public IEnumerable<Key> Get(Func<Key, bool> predicate) => _dbSet.Where(predicate);
+        public IEnumerable<Encryption> Get(Func<Encryption, bool> predicate) => _dbSet.Where(predicate).ToList();
 
-        public Key? Get(int id) => _dbSet.Find(id);
+        public Encryption? Get(int id) => _dbSet.Find(id);
 
-        public void Add(Key entity)
+        public void Add(Encryption entity)
         {
             _dbSet.Add(entity);
             try { _dbContext.SaveChanges(); }
             catch { _dbContext.Entry(entity).State = EntityState.Detached; throw; }
         }
 
-        public void Update(Key entity)
+        public void Update(Encryption entity)
         {
             _dbContext.Entry(_dbSet.Find(entity.Id) ?? throw new("Given entity was not found.")).State = EntityState.Modified;
             try { _dbContext.SaveChanges(); }

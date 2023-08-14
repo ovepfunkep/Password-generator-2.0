@@ -2,11 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 
 using PwdGenBLL.Converters;
+using PwdGenBLL.DTOs;
 using PwdGenBLL.Services;
 
-using PwdGenDLL;
-using PwdGenDLL.Models;
-using PwdGenDLL.Repositories.Implementations;
+using PwdGenDAL;
+using PwdGenDAL.Models;
+using PwdGenDAL.Repositories.Implementations;
 
 namespace PwdGenTests.BLL.Services
 {

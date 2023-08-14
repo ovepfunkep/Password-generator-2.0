@@ -1,4 +1,6 @@
-﻿using PwdGenDLL.Models;
+﻿using PwdGenDAL.Models;
+
+using PwdGenBLL.DTOs;
 
 namespace PwdGenBLL.Converters
 {

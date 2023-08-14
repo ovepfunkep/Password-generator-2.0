@@ -1,4 +1,4 @@
-﻿namespace PwdGenDLL.Models
+﻿namespace PwdGenDAL.Models
 {
     public class Encryption
     {

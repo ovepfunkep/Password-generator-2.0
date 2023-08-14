@@ -1,11 +1,11 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-using PwdGenDLL;
-using PwdGenDLL.Models;
-using PwdGenDLL.Repositories.Implementations;
+using PwdGenDAL;
+using PwdGenDAL.Models;
+using PwdGenDAL.Repositories.Implementations;
 
-namespace PwdGenTests.DLL.Repositories
+namespace PwdGenTests.DAL.Repositories
 {
     public class PasswordHistoryServiceTests
     {

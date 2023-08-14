@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PwdGenBLL\PwdGenBLL.csproj" />
-    <ProjectReference Include="..\PwdGenDLL\PwdGenDLL.csproj" />
+    <ProjectReference Include="..\PwdGenDAL\PwdGenDAL.csproj" />
   </ItemGroup>
 
 </Project>

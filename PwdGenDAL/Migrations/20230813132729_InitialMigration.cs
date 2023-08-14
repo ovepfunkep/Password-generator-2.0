@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PwdGenDLL.Migrations
+namespace PwdGenDAL.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration
@@ -91,7 +91,7 @@ namespace PwdGenDLL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Services",
+                name: "Platforms",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -102,10 +102,10 @@ namespace PwdGenDLL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Services", x => x.Id);
-                    table.CheckConstraint("CHK_Service_Name_MaxLength", "LENGTH(Name) <= 100");
+                    table.PrimaryKey("PK_Platforms", x => x.Id);
+                    table.CheckConstraint("CHK_Platform_Name_MaxLength", "LENGTH(Name) <= 100");
                     table.ForeignKey(
-                        name: "FK_Services_PasswordHistories_PasswordHistoryId",
+                        name: "FK_Platforms_PasswordHistories_PasswordHistoryId",
                         column: x => x.PasswordHistoryId,
                         principalTable: "PasswordHistories",
                         principalColumn: "Id",
@@ -130,8 +130,8 @@ namespace PwdGenDLL.Migrations
                 column: "SettingsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_PasswordHistoryId",
-                table: "Services",
+                name: "IX_Platforms_PasswordHistoryId",
+                table: "Platforms",
                 column: "PasswordHistoryId");
 
             migrationBuilder.CreateIndex(
@@ -150,7 +150,7 @@ namespace PwdGenDLL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "Platforms");
 
             migrationBuilder.DropTable(
                 name: "PasswordHistories");
