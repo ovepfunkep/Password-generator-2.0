@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Icons\bookmarksIcon.png" />
+    <None Remove="Resources\Icons\circledDownArrowIcon.png" />
+    <None Remove="Resources\Icons\closeIcon.png" />
+    <None Remove="Resources\Icons\copyNotificationIcon.png" />
+    <None Remove="Resources\Icons\copyPasswordIcon.png" />
+    <None Remove="Resources\Icons\deleteIcon.png" />
+    <None Remove="Resources\Icons\downArrowIcon.png" />
+    <None Remove="Resources\Icons\historyIcon.png" />
+    <None Remove="Resources\Icons\linkIcon.png" />
+    <None Remove="Resources\Icons\loadPhotoIcon.png" />
+    <None Remove="Resources\Icons\loopIcon.png" />
+    <None Remove="Resources\Icons\minimizeIcon.png" />
+    <None Remove="Resources\Icons\questionIcon.png" />
+    <None Remove="Resources\Icons\randomizeIcon.png" />
+    <None Remove="Resources\Icons\settingsIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\bookmarksIcon.png" />
+    <Resource Include="Resources\Icons\circledDownArrowIcon.png" />
+    <Resource Include="Resources\Icons\closeIcon.png" />
+    <Resource Include="Resources\Icons\copyNotificationIcon.png" />
+    <Resource Include="Resources\Icons\copyPasswordIcon.png" />
+    <Resource Include="Resources\Icons\deleteIcon.png" />
+    <Resource Include="Resources\Icons\downArrowIcon.png" />
+    <Resource Include="Resources\Icons\historyIcon.png" />
+    <Resource Include="Resources\Icons\linkIcon.png" />
+    <Resource Include="Resources\Icons\loadPhotoIcon.png" />
+    <Resource Include="Resources\Icons\loopIcon.png" />
+    <Resource Include="Resources\Icons\minimizeIcon.png" />
+    <Resource Include="Resources\Icons\questionIcon.png" />
+    <Resource Include="Resources\Icons\randomizeIcon.png" />
+    <Resource Include="Resources\Icons\settingsIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
+</Project>
